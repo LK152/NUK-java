@@ -57,7 +57,7 @@ const ClickRouting = () => {
 
 			setRoutingControl(control);
 		}
-	}, [points]);
+	}, [map, points, routingControl]);
 
 	return (
 		<>

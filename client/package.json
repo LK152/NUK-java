@@ -11,6 +11,7 @@
 		"@types/node": "^16.18.126",
 		"@types/react": "^19.1.5",
 		"@types/react-dom": "^19.1.5",
+		"axios": "^1.9.0",
 		"java-project": "file:",
 		"leaflet": "^1.9.4",
 		"leaflet-routing-machine": "^3.2.12",

@@ -1,12 +1,18 @@
 import { useState } from 'react';
+import axios from 'axios';
 
 const Signup = () => {
 	const [account, setAccount] = useState('');
 	const [password, setPassword] = useState('');
 
+	const signupapi = () => {
+		axios.post('/auth/register', { account, password });
+	};
+
 	return (
 		<div>
 			<form
+				onSubmit={signupapi}
 				style={{
 					display: 'flex',
 					flexDirection: 'column',
