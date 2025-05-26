@@ -6,7 +6,7 @@ const Signup = () => {
 	const [password, setPassword] = useState('');
 
 	const signupapi = () => {
-		axios.post('/auth/register', { account, password });
+		axios.post('/auth/register', JSON.stringify({ account, password }));
 	};
 
 	return (
