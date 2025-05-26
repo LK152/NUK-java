@@ -13,7 +13,7 @@ const Login = () => {
 
 	useEffect(() => {
 		axios
-			.get('http://localhost:8080/users')
+			.get('http://localhost:8080/auth/users')
 			.then((res) => setData(res.data));
 	}, []);
 
