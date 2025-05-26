@@ -5,7 +5,8 @@ const Signup = () => {
 	const [account, setAccount] = useState('');
 	const [password, setPassword] = useState('');
 
-	const signupapi = () => {
+	const signupapi = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
 		axios.post('/auth/register', JSON.stringify({ account, password }));
 	};
 
