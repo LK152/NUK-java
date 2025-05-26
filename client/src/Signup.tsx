@@ -9,7 +9,7 @@ const Signup = () => {
 	const [data, setData] = useState<{ username: string; password: string }[] | null>(null);
 
 	useEffect(() => {
-		axios.get('http://localhost:8080/users').then((res) => setData(res.data))
+		axios.get('http://localhost:8080/auth/users').then((res) => setData(res.data))
 	}, [])
 
 	const signupapi = (e: React.FormEvent<HTMLFormElement>) => {
