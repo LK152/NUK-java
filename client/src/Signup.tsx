@@ -7,7 +7,7 @@ const Signup = () => {
 
 	const signupapi = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		axios.post('http://localhost:8080/auth/register', JSON.stringify({ account, password }), {
+		axios.post('http://localhost:8080/auth/register', JSON.stringify({ username: account, password }), {
 			headers: {
 				'Content-Type': 'application/json',
 			},
