@@ -1,21 +1,32 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import data from './users.json';
+import axios from 'axios';
 
 const Login = () => {
 	const nav = useNavigate();
 	const [account, setAccount] = useState('');
 	const [pswd, setPassword] = useState('');
 	const [incorrect, setIncorrect] = useState(false);
+	const [data, setData] = useState<
+		{ username: string; password: string }[] | null
+	>(null);
+
+	useEffect(() => {
+		axios
+			.get('http://localhost:8080/users')
+			.then((res) => setData(res.data));
+	}, []);
 
 	const auth = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		data.forEach(({ username, password }) => {
-			if (account === username && pswd === password) {
-				nav('/');
-				setIncorrect(false);
-			} else setIncorrect(true);
-		});
+		if (data) {
+			data.forEach(({ username, password }) => {
+				if (account === username && pswd === password) {
+					nav('/');
+					setIncorrect(false);
+				} else setIncorrect(true);
+			});
+		}
 	};
 
 	return (
@@ -52,7 +63,11 @@ const Login = () => {
 				<div style={{ margin: '0 20px' }}></div>
 				<button type='submit'>登入</button>
 			</div>
-			{incorrect ? <div style={{color: 'red'}}>帳號或密碼錯誤</div> : <div></div>}
+			{incorrect ? (
+				<div style={{ color: 'red' }}>帳號或密碼錯誤</div>
+			) : (
+				<div></div>
+			)}
 		</form>
 	);
 };
