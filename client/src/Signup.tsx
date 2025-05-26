@@ -1,15 +1,23 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const Signup = () => {
     const nav = useNavigate();
 	const [account, setAccount] = useState('');
-	const [password, setPassword] = useState('');
+	const [pswd, setPassword] = useState('');
+	const [data, setData] = useState<{ username: string; password: string }[] | null>(null);
+
+	useEffect(() => {
+		axios.get('http://localhost:8080/users').then((res) => setData(res.data))
+	})
 
 	const signupapi = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		axios.post('http://localhost:8080/auth/register', JSON.stringify({ username: account, password }), {
+        if (data) data.forEach(({ username, password }) => {
+			if (account === username && pswd === password) nav('/login');
+		});
+		axios.post('http://localhost:8080/auth/register', JSON.stringify({ username: account, pswd }), {
 			headers: {
 				'Content-Type': 'application/json',
 			},
@@ -42,7 +50,7 @@ const Signup = () => {
 				<input
 					id='password'
 					type='password'
-					value={password}
+					value={pswd}
 					onChange={(e) => setPassword(e.target.value)}
 					required
 				/>
