@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Signup = () => {
+    const nav = useNavigate();
 	const [account, setAccount] = useState('');
 	const [password, setPassword] = useState('');
 
@@ -12,6 +14,7 @@ const Signup = () => {
 				'Content-Type': 'application/json',
 			},
 		});
+        nav('/login');
 	};
 
 	return (
