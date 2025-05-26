@@ -10,7 +10,7 @@ const Signup = () => {
 
 	useEffect(() => {
 		axios.get('http://localhost:8080/users').then((res) => setData(res.data))
-	})
+	}, [])
 
 	const signupapi = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
