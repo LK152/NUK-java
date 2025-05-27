@@ -54,7 +54,6 @@ const FloatingMenu = ({
 				<div>
 					人人健康是永續的根本，安全城市是幸福的起點。落實SDG3與SDG11，共創健康生活、宜居環境，讓未來更美好！
 				</div>
-				;
 			</Modal>
 			<Modal
 				show={modal3}
