@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import './map.css';
+import '../map.css';
 
 const FloatingMenu = ({
 	onRouteClick,
