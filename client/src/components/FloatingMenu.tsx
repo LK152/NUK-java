@@ -87,8 +87,8 @@ const FloatingMenu = ({
 					🧭 {routeMode ? '結束路線' : '設定路線'}
 				</button>
 				<button onClick={onSearchClick}>🔍 搜尋地標</button>
-				<button onClick={onSDGsClick}>♻️ SDGs 宣導</button>
-				<button onClick={onAboutClick}>ℹ️ 關於我們</button>
+				<button onClick={() => setModal2(true)}>♻️ SDGs 宣導</button>
+				<button onClick={() => setModal3(true)}>ℹ️ 關於我們</button>
 			</div>
 		</>
 	);
