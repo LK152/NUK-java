@@ -9,6 +9,7 @@ export type Spot = {
   lat: number;
   lng: number;
   description: string;
+  image: string;
 };
 
 interface RoutingWithPOIProps {
@@ -69,6 +70,11 @@ const RoutingWithPOI: React.FC<RoutingWithPOIProps> = ({ spots, routeMode }) => 
         <Marker key={spot.name} position={[spot.lat, spot.lng]}>
           <Popup>
             <h3>{spot.name}</h3>
+            <img
+                src={`http://localhost:8080/images/spots/${spot.image}`}
+                alt={spot.name}
+                style={{ width: '100px', borderRadius: '8px' }}
+            />
             <p>{spot.description}</p>
             {routeMode && (
               <button

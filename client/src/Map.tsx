@@ -17,7 +17,7 @@ L.Icon.Default.mergeOptions({
 const Map = () => {
 	const username = localStorage.getItem('username');
 	const [spots, setSpots] = useState<
-		{ name: string; lat: number; lng: number; description: string }[]
+		{ name: string; lat: number; lng: number; description: string; image: string}[]
 	>([]);
 	const [routeMode, setRoutingMode] = useState(false);
 
