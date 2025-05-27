@@ -41,7 +41,7 @@ const Map = () => {
 				onRouteClick={() => setRoutingMode((v) => !v)}
 				onAboutClick={() => alert('這是我們的簡介')}
 				onSDGsClick={() => alert('這是SDGs永續宣導')}
-				userName={username ? username : ''}
+				userName={username ? username : null}
 			/>
 
 			<MapContainer
