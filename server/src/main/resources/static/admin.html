@@ -115,11 +115,9 @@
       </div>
       <button type="submit">送出</button>
     </form>
-
     <div style="margin-top: 2em; text-align: center;">
       <button id="updateBtn" style="background-color:#f59e0b">修改景點</button>
     </div>
-
     <div id="spotList" style="margin-top: 3em;"></div>
   </div>
 
@@ -197,11 +195,18 @@
       const lat = parseFloat(document.getElementById('lat').value);
       const lng = parseFloat(document.getElementById('lng').value);
       const desc = document.getElementById('desc').value;
+      const imageFile = document.getElementById('image').files[0];
 
-      const res = await fetch(`/spots/${encodeURIComponent(name)}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, lat, lng, description: desc })
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('lat', lat);
+      formData.append('lng', lng);
+      formData.append('description', desc);
+      if (imageFile) formData.append('image', imageFile);
+
+      const res = await fetch(`/spots/update`, {
+        method: 'POST',
+        body: formData
       });
 
       alert(await res.text());

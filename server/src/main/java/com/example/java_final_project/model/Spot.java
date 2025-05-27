@@ -54,4 +54,12 @@ public class Spot {
         return(name != null && name.toLowerCase().contains(keyword)) ||
             (description != null && description.toLowerCase().contains(keyword));
     }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
 }

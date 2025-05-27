@@ -23,8 +23,8 @@ import com.example.java_final_project.util.JsonUtil;
 @RestController
 public class SpotController {
 
-    @GetMapping("/spots") // 取得所有景點
-    public List<Spot> getSpots() throws IOException{
+    @GetMapping("/spots")
+    public List<Spot> getSpots() throws IOException {
         return JsonUtil.readList("spots.json", Spot.class);
     }
 
@@ -36,17 +36,14 @@ public class SpotController {
         @RequestParam("description") String description,
         @RequestParam("image") MultipartFile imageFile
     ) throws IOException {
-        // 圖片儲存路徑（保證用絕對路徑寫入）
         String uploadDir = new File("images/spots").getAbsolutePath() + File.separator;
         File dir = new File(uploadDir);
         if (!dir.exists()) dir.mkdirs();
 
-        // 儲存圖片
         String filename = UUID.randomUUID() + imageFile.getOriginalFilename();
         File saveFile = new File(uploadDir + filename);
         imageFile.transferTo(saveFile);
 
-        // 更新 JSON 檔
         List<Spot> spots = JsonUtil.readList("spots.json", Spot.class);
         Spot newSpot = new Spot(name, lat, lng, description, filename);
         spots.add(newSpot);
@@ -55,11 +52,46 @@ public class SpotController {
         return ResponseEntity.ok("景點新增成功");
     }
 
-    @PutMapping("/spots/{name}") // 更新一個景點
-    public void updateSpot(@PathVariable String name, @RequestBody Spot updatedSpot) throws IOException{
+    @PutMapping("/spots/update")
+    public ResponseEntity<String> updateSpotWithImage(
+        @RequestParam("name") String name,
+        @RequestParam("lat") double lat,
+        @RequestParam("lng") double lng,
+        @RequestParam("description") String description,
+        @RequestParam(value = "image", required = false) MultipartFile imageFile
+    ) throws IOException {
         List<Spot> spots = JsonUtil.readList("spots.json", Spot.class);
-        for(int i=0; i<spots.size(); i++) {
-            if(spots.get(i).getName().equals(name)) {
+        for (int i = 0; i < spots.size(); i++) {
+            if (spots.get(i).getName().equals(name)) {
+                Spot spot = spots.get(i);
+                spot.setLat(lat);
+                spot.setLng(lng);
+                spot.setDescription(description);
+
+                if (imageFile != null && !imageFile.isEmpty()) {
+                    String uploadDir = new File("images/spots").getAbsolutePath() + File.separator;
+                    File dir = new File(uploadDir);
+                    if (!dir.exists()) dir.mkdirs();
+
+                    String filename = UUID.randomUUID() + imageFile.getOriginalFilename();
+                    File saveFile = new File(uploadDir + filename);
+                    imageFile.transferTo(saveFile);
+                    spot.setImage(filename);
+                }
+
+                spots.set(i, spot);
+                break;
+            }
+        }
+        JsonUtil.writeList("spots.json", spots);
+        return ResponseEntity.ok("景點修改成功");
+    }
+
+    @PutMapping("/spots/{name}")
+    public void updateSpot(@PathVariable String name, @RequestBody Spot updatedSpot) throws IOException {
+        List<Spot> spots = JsonUtil.readList("spots.json", Spot.class);
+        for (int i = 0; i < spots.size(); i++) {
+            if (spots.get(i).getName().equals(name)) {
                 spots.set(i, updatedSpot);
                 break;
             }
@@ -67,18 +99,18 @@ public class SpotController {
         JsonUtil.writeList("spots.json", spots);
     }
 
-    @DeleteMapping("/spots/{name}") // 刪除一個景點
-    public void deleteSpot(@PathVariable String name) throws IOException{
+    @DeleteMapping("/spots/{name}")
+    public void deleteSpot(@PathVariable String name) throws IOException {
         List<Spot> spots = JsonUtil.readList("spots.json", Spot.class);
         spots.removeIf(s -> s.getName().equals(name));
         JsonUtil.writeList("spots.json", spots);
     }
 
-    @GetMapping("/spots/search") // 搜尋景點
+    @GetMapping("/spots/search")
     public List<Spot> searchSpots(@RequestParam String keyword) throws IOException {
         List<Spot> spots = JsonUtil.readList("spots.json", Spot.class);
         return spots.stream()
-                    .filter(spot -> spot.matchesKeyword(keyword))
-                    .collect(Collectors.toList());
+                .filter(spot -> spot.matchesKeyword(keyword))
+                .collect(Collectors.toList());
     }
-}    
+}
