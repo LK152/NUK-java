@@ -18,8 +18,7 @@ const Login = () => {
 			});
 	}, []);
 
-	const auth = (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
+	const auth = () => {
 		if (data) {
 			const found = data.some(({ username, password }) => {
 				return username === account && password === pswd;
@@ -37,8 +36,7 @@ const Login = () => {
 	};
 
 	return (
-		<form
-			onSubmit={auth}
+		<div
 			style={{
 				display: 'flex',
 				flexDirection: 'column',
@@ -68,12 +66,12 @@ const Login = () => {
 			<div style={{ display: 'flex' }}>
 				<button type="button" onClick={() => nav('/signup')}>註冊</button>
 				<div style={{ margin: '0 20px' }}></div>
-				<button type='submit'>登入</button>
+				<button onClick={() => auth()}>登入</button>
 			</div>
 			{incorrect && (
 				<div style={{ color: 'red', marginTop: '1em' }}>❌ 帳號或密碼錯誤</div>
 			)}
-		</form>
+		</div>
 	);
 };
 

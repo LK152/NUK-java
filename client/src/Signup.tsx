@@ -6,18 +6,19 @@ const Signup = () => {
 	const nav = useNavigate();
 	const [account, setAccount] = useState('');
 	const [pswd, setPassword] = useState('');
-	const [data, setData] = useState<{ username: string; password: string }[] | null>(null);
+	const [data, setData] = useState<
+		{ username: string; password: string }[] | null
+	>(null);
 	const [error, setError] = useState('');
 
 	useEffect(() => {
-		axios.get('http://lukewu.site:8088/auth/users')
+		axios
+			.get('http://lukewu.site:8088/auth/users')
 			.then((res) => setData(res.data))
 			.catch((err) => console.error('取得使用者列表失敗', err));
 	}, []);
 
-	const signupapi = async (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
-
+	const signupapi = async () => {
 		if (data?.some((u) => u.username === account)) {
 			setError('❌ 此帳號已存在');
 			return;
@@ -45,8 +46,7 @@ const Signup = () => {
 
 	return (
 		<div>
-			<form
-				onSubmit={signupapi}
+			<div
 				style={{
 					display: 'flex',
 					flexDirection: 'column',
@@ -73,10 +73,14 @@ const Signup = () => {
 					required
 				/>
 				<div style={{ margin: '10px 0' }}></div>
-				<button type='submit'>註冊</button>
-				{error && <p style={{ color: 'red', marginTop: '10px' }}>{error}</p>}
-				{error && <button onClick={() => nav('/login')}>回登入頁？</button>}
-			</form>
+				<button onClick={() => signupapi()}>註冊</button>
+				{error && (
+					<p style={{ color: 'red', marginTop: '10px' }}>{error}</p>
+				)}
+				{error && (
+					<button onClick={() => nav('/login')}>回登入頁？</button>
+				)}
+			</div>
 		</div>
 	);
 };
