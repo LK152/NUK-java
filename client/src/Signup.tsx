@@ -3,26 +3,44 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 const Signup = () => {
-    const nav = useNavigate();
+	const nav = useNavigate();
 	const [account, setAccount] = useState('');
 	const [pswd, setPassword] = useState('');
 	const [data, setData] = useState<{ username: string; password: string }[] | null>(null);
+	const [error, setError] = useState('');
 
 	useEffect(() => {
-		axios.get('http://localhost:8080/auth/users').then((res) => setData(res.data))
-	}, [])
+		axios.get('http://localhost:8080/auth/users')
+			.then((res) => setData(res.data))
+			.catch((err) => console.error('取得使用者列表失敗', err));
+	}, []);
 
-	const signupapi = (e: React.FormEvent<HTMLFormElement>) => {
+	const signupapi = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-        if (data) data.forEach(({ username, password }) => {
-			if (account === username && pswd === password) nav('/login');
-		});
-		axios.post('http://localhost:8080/auth/register', JSON.stringify({ username: account, pswd }), {
-			headers: {
-				'Content-Type': 'application/json',
-			},
-		});
-        nav('/login');
+
+		if (data?.some((u) => u.username === account)) {
+			setError('❌ 此帳號已存在');
+			return;
+		}
+
+		try {
+			const res = await axios.post(
+				'http://localhost:8080/auth/register',
+				{ username: account, password: pswd },
+				{ headers: { 'Content-Type': 'application/json' } }
+			);
+
+			if (res.status === 200) {
+				alert('✅ 註冊成功，請登入');
+				nav('/login');
+			}
+		} catch (err: any) {
+			if (err.response?.status === 409) {
+				setError('❌ 帳號已存在');
+			} else {
+				setError('⚠️ 系統錯誤，請稍後再試');
+			}
+		}
 	};
 
 	return (
@@ -40,7 +58,7 @@ const Signup = () => {
 				<label htmlFor='account'>帳號</label>
 				<input
 					id='account'
-					type='account'
+					type='text'
 					value={account}
 					onChange={(e) => setAccount(e.target.value)}
 					required
@@ -56,6 +74,7 @@ const Signup = () => {
 				/>
 				<div style={{ margin: '10px 0' }}></div>
 				<button type='submit'>註冊</button>
+				{error && <p style={{ color: 'red', marginTop: '10px' }}>{error}</p>}
 			</form>
 		</div>
 	);

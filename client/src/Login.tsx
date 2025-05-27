@@ -7,25 +7,31 @@ const Login = () => {
 	const [account, setAccount] = useState('');
 	const [pswd, setPassword] = useState('');
 	const [incorrect, setIncorrect] = useState(false);
-	const [data, setData] = useState<
-		{ username: string; password: string }[] | null
-	>(null);
+	const [data, setData] = useState<{ username: string; password: string }[] | null>(null);
 
 	useEffect(() => {
 		axios
 			.get('http://localhost:8080/auth/users')
-			.then((res) => setData(res.data));
+			.then((res) => setData(res.data))
+			.catch((err) => {
+				console.error('取得使用者資料失敗', err);
+			});
 	}, []);
 
 	const auth = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		if (data) {
-			data.forEach(({ username, password }) => {
-				if (account === username && pswd === password) {
-					nav('/');
-					setIncorrect(false);
-				} else setIncorrect(true);
+			const found = data.some(({ username, password }) => {
+				return username === account && password === pswd;
 			});
+
+			if (found) {
+				setIncorrect(false);
+				localStorage.setItem('auth', 'true'); // 可選：存登入狀態
+				nav('/');
+			} else {
+				setIncorrect(true);
+			}
 		}
 	};
 
@@ -43,7 +49,7 @@ const Login = () => {
 			<label htmlFor='account'>帳號</label>
 			<input
 				id='account'
-				type='account'
+				type='text'
 				value={account}
 				onChange={(e) => setAccount(e.target.value)}
 				required
@@ -59,14 +65,12 @@ const Login = () => {
 			/>
 			<div style={{ margin: '10px 0' }}></div>
 			<div style={{ display: 'flex' }}>
-				<button onClick={() => nav('/signup')}>註冊</button>
+				<button type="button" onClick={() => nav('/signup')}>註冊</button>
 				<div style={{ margin: '0 20px' }}></div>
 				<button type='submit'>登入</button>
 			</div>
-			{incorrect ? (
-				<div style={{ color: 'red' }}>帳號或密碼錯誤</div>
-			) : (
-				<div></div>
+			{incorrect && (
+				<div style={{ color: 'red', marginTop: '1em' }}>❌ 帳號或密碼錯誤</div>
 			)}
 		</form>
 	);

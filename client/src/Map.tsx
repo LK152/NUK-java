@@ -1,8 +1,9 @@
+import { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
-import data from './spots.json';
 import { isMobile } from 'react-device-detect';
 import Routing from './components/Routing';
+import axios from 'axios';
 
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -12,6 +13,16 @@ L.Icon.Default.mergeOptions({
 });
 
 const Map = () => {
+	const [spots, setSpots] = useState<
+		{ name: string; lat: number; lng: number; description: string }[]
+	>([]);
+
+	useEffect(() => {
+		axios.get('http://localhost:8080/spots').then((res) => {
+			setSpots(res.data);
+		});
+	}, []);
+
 	const center: [number, number] = [22.734441337328143, 120.28448584692757];
 	const bounds: [[number, number], [number, number]] = [
 		[22.724854183611672, 120.2677869207884], // 左下
@@ -36,22 +47,15 @@ const Map = () => {
 					attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
 					url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 				/>
-				{data.map(({ name, x, y, description }) => {
-					return (
-						<Marker position={[x, y]}>
-							<Popup>
-								<h1 style={{ margin: 0 }}>{name}</h1>
-								<br />
-								<h3>{description}</h3>
-							</Popup>
-						</Marker>
-					);
-				})}
-                <Routing />
-				{/* <Routing
-					from={[data[0].x, data[0].y]}
-					to={[data[3].x, data[3].y]}
-				/> */}
+				{spots.map(({ name, lat, lng, description }) => (
+					<Marker key={name} position={[lat, lng]}>
+						<Popup>
+							<h3 style={{ margin: 0 }}>{name}</h3>
+							<p>{description}</p>
+						</Popup>
+					</Marker>
+				))}
+				<Routing />
 			</MapContainer>
 		</div>
 	);
