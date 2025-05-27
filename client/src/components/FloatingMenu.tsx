@@ -5,10 +5,12 @@ const FloatingMenu = ({
 	onRouteClick,
 	onAboutClick,
 	onSDGsClick,
+    userName
 }: {
 	onRouteClick: () => void;
 	onAboutClick: () => void;
 	onSDGsClick: () => void;
+    userName?: string;
 }) => {
 	const [open, setOpen] = useState(false);
 
@@ -23,6 +25,7 @@ const FloatingMenu = ({
 
 			{/* 展開選單本體（絕對定位，不會影響上方按鈕） */}
 			<div className={`fab-options ${open ? 'show' : ''}`}>
+                <button>{userName}</button>
 				<button onClick={onRouteClick}>🧭 設定路線</button>
 				<button onClick={onAboutClick}>ℹ️ 關於我們</button>
 				<button onClick={onSDGsClick}>♻️ SDGs 宣導</button>

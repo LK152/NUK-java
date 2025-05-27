@@ -27,7 +27,8 @@ const Login = () => {
 
 			if (found) {
 				setIncorrect(false);
-				localStorage.setItem('auth', 'true'); // 可選：存登入狀態
+				localStorage.setItem('auth', 'true');
+                localStorage.setItem('username', account);
 				nav('/');
 			} else {
 				setIncorrect(true);
