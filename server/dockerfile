@@ -1,0 +1,29 @@
+# === 第一階段：建置專案 ===
+FROM maven:3.9.6-eclipse-temurin-21 AS builder
+
+WORKDIR /app
+
+# 複製 pom.xml 並先下載依賴，利用 Docker cache
+COPY pom.xml .
+RUN mvn dependency:go-offline
+
+# 複製所有程式碼並建置
+COPY src ./src
+RUN mvn clean package -DskipTests
+
+# === 第二階段：執行 jar 檔 ===
+FROM eclipse-temurin:21-jdk-alpine
+
+WORKDIR /app
+
+# 將 jar 複製進容器（依實際 jar 名稱調整）
+COPY --from=builder /app/target/*.jar app.jar
+
+# 建立資料夾（若有 static JSON、圖片）
+RUN mkdir -p /app/images/spots /app/process
+
+# 將容器的 8080 port 開放
+EXPOSE 8080
+
+# 執行應用程式
+ENTRYPOINT ["java", "-jar", "app.jar"]
