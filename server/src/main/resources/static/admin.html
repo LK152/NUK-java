@@ -105,6 +105,10 @@
       </div>
       <button type="submit">送出</button>
     </form>
+  <div style="margin-top: 2em; text-align: center;">
+      <button id="updateBtn" style="background-color:#f59e0b">修改景點</button>
+      <button id="deleteBtn" style="background-color:#ef4444">刪除景點</button>
+    </div>
   </div>
 
   <script>
@@ -138,6 +142,38 @@
         method: 'POST',
         body: formData
       });
+      alert(await res.text());
+    });
+
+    // 修改景點
+    document.getElementById('updateBtn').addEventListener('click', async () => {
+      const name = document.getElementById('name').value;
+      const lat = parseFloat(document.getElementById('lat').value);
+      const lng = parseFloat(document.getElementById('lng').value);
+      const desc = document.getElementById('desc').value;
+      const body = JSON.stringify({ name, lat, lng, description: desc });
+
+      const res = await fetch(`/spots/${encodeURIComponent(name)}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body
+      });
+
+      alert(await res.text());
+    });
+
+    // 刪除景點
+    document.getElementById('deleteBtn').addEventListener('click', async () => {
+      const name = document.getElementById('name').value;
+      if (!name) return alert('請先輸入景點名稱');
+
+      const confirmDelete = confirm(`確認要刪除「${name}」景點嗎？`);
+      if (!confirmDelete) return;
+
+      const res = await fetch(`/spots/${encodeURIComponent(name)}`, {
+        method: 'DELETE'
+      });
+
       alert(await res.text());
     });
   </script>
