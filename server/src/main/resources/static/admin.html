@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <title>新增景點</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #e0c3fc, #8ec5fc);
+      overflow-x: hidden;
+      position: relative;
+    }
+    .background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+    .bubble {
+      position: absolute;
+      bottom: -100px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      animation: rise 12s infinite ease-in;
+    }
+    @keyframes rise {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-120vh) scale(1.5);
+        opacity: 0;
+      }
+    }
+    .container {
+      max-width: 600px;
+      margin: 3em auto;
+      background: #fff;
+      padding: 2em;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 1em;
+      color: #111;
+    }
+    input, textarea {
+      display: block;
+      width: 100%;
+      margin-top: 1em;
+      padding: 0.5em;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    .drop-zone {
+      margin-top: 1em;
+      padding: 2em;
+      border: 2px dashed #999;
+      text-align: center;
+      border-radius: 10px;
+      background: #f9f9f9;
+      cursor: pointer;
+    }
+    button {
+      margin-top: 1.5em;
+      padding: 0.6em 1.2em;
+      border: none;
+      background-color: #4f46e5;
+      color: white;
+      border-radius: 8px;
+      font-size: 1em;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #3730a3;
+    }
+  </style>
+</head>
+<body>
+  <div class="background">
+    <div class="bubble" style="left: 10%; width: 30px; height: 30px; animation-duration: 9s;"></div>
+    <div class="bubble" style="left: 25%; width: 60px; height: 60px; animation-duration: 13s;"></div>
+    <div class="bubble" style="left: 45%; width: 40px; height: 40px; animation-duration: 10s;"></div>
+    <div class="bubble" style="left: 70%; width: 20px; height: 20px; animation-duration: 8s;"></div>
+    <div class="bubble" style="left: 85%; width: 50px; height: 50px; animation-duration: 14s;"></div>
+  </div>
+
+  <div class="container">
+    <h1>新增景點</h1>
+    <form id="spotForm" action="/spots/upload" method="post" enctype="multipart/form-data">
+      <input type="text" id="name" placeholder="名稱" required />
+      <input type="number" id="lat" placeholder="緯度" required step="any" />
+      <input type="number" id="lng" placeholder="經度" required step="any" />
+      <textarea id="desc" placeholder="簡介" rows="3"></textarea>
+      <div class="drop-zone" id="dropZone">
+        拖曳圖片至此或點擊選擇
+        <input type="file" id="image" accept="image/*" hidden />
+      </div>
+      <button type="submit">送出</button>
+    </form>
+  </div>
+
+  <script>
+    const dropZone = document.getElementById('dropZone');
+    const imageInput = document.getElementById('image');
+
+    dropZone.addEventListener('click', () => imageInput.click());
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.style.background = '#eef';
+    });
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.style.background = '#f9f9f9';
+    });
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      imageInput.files = e.dataTransfer.files;
+      dropZone.style.background = '#f9f9f9';
+    });
+
+    document.getElementById('spotForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData();
+      formData.append('name', document.getElementById('name').value);
+      formData.append('lat', document.getElementById('lat').value);
+      formData.append('lng', document.getElementById('lng').value);
+      formData.append('description', document.getElementById('desc').value);
+      formData.append('image', document.getElementById('image').files[0]);
+
+      const res = await fetch('/spots/upload', {
+        method: 'POST',
+        body: formData
+      });
+      alert(await res.text());
+    });
+  </script>
+</body>
+</html>
