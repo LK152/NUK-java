@@ -59,7 +59,7 @@ const Map = () => {
 
 	useEffect(() => {
 		axios
-			.get('http://localhost:8080/spots')
+			.get('http://localhost:8088/spots')
 			.then((res) => setSpots(res.data));
 	}, []);
 

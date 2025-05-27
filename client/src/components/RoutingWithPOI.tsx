@@ -71,7 +71,7 @@ const RoutingWithPOI: React.FC<RoutingWithPOIProps> = ({ spots, routeMode }) => 
           <Popup>
             <h3>{spot.name}</h3>
             <img
-                src={`http://localhost:8080/images/spots/${spot.image}`}
+                src={`http://localhost:8088/images/spots/${spot.image}`}
                 alt={spot.name}
                 style={{ width: '100px', borderRadius: '8px' }}
             />

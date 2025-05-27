@@ -1,5 +1,5 @@
 # Use official Node.js image as build environment
-FROM node:18-alpine AS build
+FROM node:23-alpine:slim AS build
 
 WORKDIR /app
 
