@@ -58,19 +58,11 @@ const Map = () => {
     return () => navigator.geolocation.clearWatch(watchId);
   }, []);
 
-  // 讀取所有景點
-  useEffect(() => {
-    axios
-      .get('http://lukewu.site:8088/spots')
-      .then((res) => setSpots(res.data))
-      .catch((err) => console.error('讀取景點失敗:', err));
-  }, []);
-
-  // 切換模式時強制刷新 RoutingWithPOI
-  const toggleRouteMode = () => {
-    setRoutingMode((prev) => !prev);
-    setRoutingKey((prev) => prev + 1); // 改變 key 會觸發 component 重掛載
-  };
+	useEffect(() => {
+		axios
+			.get('https://nukserver.xn--hrr.tw/spots')
+			.then((res) => setSpots(res.data));
+	}, []);
 
   const center: [number, number] = [22.734441337328143, 120.28448584692757];
   const bounds: [[number, number], [number, number]] = [
