@@ -13,7 +13,7 @@ const Signup = () => {
 
 	useEffect(() => {
 		axios
-			.get('http://lukewu.site:8088/auth/users')
+			.get('http://localhost:8080/auth/users')
 			.then((res) => setData(res.data))
 			.catch((err) => console.error('取得使用者列表失敗', err));
 	}, []);
@@ -26,7 +26,7 @@ const Signup = () => {
 
 		try {
 			const res = await axios.post(
-				'http://lukewu.site:8088/auth/register',
+				'http://localhost:8080/auth/register',
 				{ username: account, password: pswd },
 				{ headers: { 'Content-Type': 'application/json' } }
 			);
