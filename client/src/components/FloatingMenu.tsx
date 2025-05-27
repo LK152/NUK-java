@@ -6,8 +6,6 @@ import axios from 'axios';
 
 interface Props {
 	onRouteClick: () => void;
-	onAboutClick: () => void;
-	onSDGsClick: () => void;
 	onSearchClick: () => void;
 	userName: string | null;
 	routeMode: boolean;
@@ -15,8 +13,6 @@ interface Props {
 
 const FloatingMenu = ({
 	onRouteClick,
-	onAboutClick,
-	onSDGsClick,
 	onSearchClick,
 	userName,
 	routeMode,
@@ -41,7 +37,7 @@ const FloatingMenu = ({
 		axios
 			.get(`https://nukserver.xn--hrr.tw/progress/${userName}`)
 			.then((res) => setProgress(res.data));
-	}, [modal, userName]);
+	}, [modal1, userName]);
 
 	return (
 		<>
@@ -50,12 +46,21 @@ const FloatingMenu = ({
 					return <div>{val}</div>;
 				})}
 			</Modal>
-			<Modal show={modal2} onClose={() => setModal2(false)} title='♻️ SDGs 宣導'>
+			<Modal
+				show={modal2}
+				onClose={() => setModal2(false)}
+				title='♻️ SDGs 宣導'
+			>
 				<div>
 					人人健康是永續的根本，安全城市是幸福的起點。落實SDG3與SDG11，共創健康生活、宜居環境，讓未來更美好！
-				</div>;
+				</div>
+				;
 			</Modal>
-			<Modal show={modal3} onClose={() => setModal3(false)} title='ℹ️ 關於我們'>
+			<Modal
+				show={modal3}
+				onClose={() => setModal3(false)}
+				title='ℹ️ 關於我們'
+			>
 				<div>
 					這是我們用無數個日夜，在分不清汗水還是淚水的臉上，產生出來的作品。仰賴的是四位組員希望可以推廣SDGS的心情(當然還有分數)，如果有看到我們的努力，我們接受現金斗內
 				</div>
@@ -69,7 +74,7 @@ const FloatingMenu = ({
 				{userName ? (
 					<>
 						<button
-							onClick={() => setModal(true)}
+							onClick={() => setModal1(true)}
 						>{`Hello, ${userName}`}</button>
 						<button
 							onClick={() => {

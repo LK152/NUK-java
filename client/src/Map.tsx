@@ -87,8 +87,6 @@ const Map = () => {
     <div style={{ width: '100%', minHeight: '100vh', position: 'relative' }}>
       <FloatingMenu
         onRouteClick={() => setRoutingMode(true)}
-        onAboutClick={() => alert('這是我們的簡介')}
-        onSDGsClick={() => alert('這是SDGs永續宣導')}
         onSearchClick={handleSearchClick}
         userName={username ? username : null}
         routeMode={routeMode}
