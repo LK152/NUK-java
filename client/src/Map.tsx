@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { isMobile } from 'react-device-detect';
 import axios from 'axios';
@@ -33,6 +33,7 @@ const Map = () => {
   const [routeMode, setRoutingMode] = useState(false);
   const [routingKey, setRoutingKey] = useState(0);
   const [currentLocation, setCurrentLocation] = useState<[number, number] | null>(null);
+  const [mapInstance, setMapInstance] = useState<L.Map | null>(null);
 
   useEffect(() => {
     if (!navigator.geolocation) return;
@@ -62,38 +63,66 @@ const Map = () => {
     [22.742338, 120.296355],
   ];
 
+  const handleSearchClick = () => {
+    const keyword = window.prompt('請輸入要搜尋的地標名稱');
+    if (!keyword || !mapInstance) return;
+
+    const found = spots.find((s) =>
+      s.name.toLowerCase().includes(keyword.trim().toLowerCase())
+    );
+
+    if (found) {
+      const latlng = L.latLng(found.lat, found.lng);
+      mapInstance.setView(latlng, 18);
+      L.popup()
+        .setLatLng(latlng)
+        .setContent(`<strong>${found.name}</strong><br>${found.description}`)
+        .openOn(mapInstance);
+    } else {
+      alert('找不到符合的地標');
+    }
+  };
+
   return (
     <div style={{ width: '100%', minHeight: '100vh', position: 'relative' }}>
       <FloatingMenu
-        onRouteClick={toggleRouteMode}
+        onRouteClick={() => setRoutingMode(true)}
         onAboutClick={() => alert('這是我們的簡介')}
-        onSDGsClick={() => alert('SDGs 宣導')}
-        userName={username}
+        onSDGsClick={() => alert('這是SDGs永續宣導')}
+        onSearchClick={handleSearchClick}
+        userName={username ? username : null}
         routeMode={routeMode}
       />
-      <MapContainer
-        center={center}
-        zoom={17}
-        minZoom={17}
-        maxZoom={18}
-        maxBounds={bounds}
-        style={{ height: isMobile ? '100vh' : '800px', width: '100%', margin: 'auto' }}
-      >
-        <TileLayer
-          attribution='&copy; OpenStreetMap contributors'
-          url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-        />
-        <RoutingWithPOI
-          key={routingKey}
-          spots={spots}
-          routeMode={routeMode}
-        />
-        {currentLocation && (
-          <Marker position={currentLocation} icon={orangeIcon}>
-            <Popup>你在這裡</Popup>
-          </Marker>
-        )}
-      </MapContainer>
+
+	<MapContainer
+	  center={center}
+	  zoom={17}
+	  minZoom={17}
+	  maxZoom={18}
+	  maxBounds={bounds}
+    whenReady={() => {
+    // Use document.querySelector to get the map instance if needed, or use a ref
+    }}
+    ref={(node) => {
+    if (node) setMapInstance(node);
+    }}
+	  style={{ height: isMobile ? '100vh' : '800px', width: '100%', margin: 'auto' }}
+	>
+	  <TileLayer
+		attribution='&copy; OpenStreetMap contributors'
+		url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+	  />
+	  <RoutingWithPOI
+		key={routingKey}
+		spots={spots}
+		routeMode={routeMode}
+	  />
+	  {currentLocation && (
+		<Marker position={currentLocation} icon={orangeIcon}>
+		<Popup>你在這裡</Popup>
+		</Marker>
+	  )}
+	</MapContainer>
     </div>
   );
 };
