@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import '../map.css';
+import { useNavigate } from 'react-router-dom';
 
 const FloatingMenu = ({
 	onRouteClick,
@@ -13,6 +14,7 @@ const FloatingMenu = ({
     userName: string | null;
 }) => {
 	const [open, setOpen] = useState(false);
+    const nav = useNavigate();
 
 	return (
 		<>
@@ -25,7 +27,7 @@ const FloatingMenu = ({
 
 			{/* 展開選單本體（絕對定位，不會影響上方按鈕） */}
 			<div className={`fab-options ${open ? 'show' : ''}`}>
-                {userName && <button>{`Hello, ${userName}`}</button>}
+                {userName ? <button>{`Hello, ${userName}`}</button> : <button onClick={() => nav('/login')}>登入</button>}
 				<button onClick={onRouteClick}>🧭 設定路線</button>
 				<button onClick={onAboutClick}>ℹ️ 關於我們</button>
 				<button onClick={onSDGsClick}>♻️ SDGs 宣導</button>
