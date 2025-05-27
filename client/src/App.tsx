@@ -17,8 +17,8 @@ function App() {
                 padding: 0
 			}}
 		>
-			<h1 style={{fontSize: '8rem', margin: 0}}>大標</h1>
-			<h2 style={{fontSize: '3rem', margin: 0}}>副標</h2>
+			<h1 style={{fontSize: '8rem', margin: 0}}>校園慢活地圖</h1>
+			<h2 style={{fontSize: '3rem', margin: 0}}>為你而寫❤️❤️</h2>
 			<Button title='進入' onClick={() => nav('/map')} />
 		</div>
 	);

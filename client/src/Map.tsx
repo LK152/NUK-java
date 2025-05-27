@@ -5,6 +5,7 @@ import { isMobile } from 'react-device-detect';
 import Routing from './components/Routing';
 import axios from 'axios';
 
+// 調整 Leaflet 預設圖示資源
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
 	iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
@@ -47,11 +48,10 @@ const Map = () => {
 					attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
 					url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 				/>
-				{spots.map(({ name, lat, lng, description }) => (
+				{spots.map(({ name, lat, lng }) => (
 					<Marker key={name} position={[lat, lng]}>
 						<Popup>
 							<h3 style={{ margin: 0 }}>{name}</h3>
-							<p>{description}</p>
 						</Popup>
 					</Marker>
 				))}
