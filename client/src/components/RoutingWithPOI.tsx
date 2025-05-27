@@ -22,49 +22,35 @@ const RoutingWithPOI: React.FC<RoutingWithPOIProps> = ({ spots, routeMode }) => 
   const [selectedSpots, setSelectedSpots] = useState<Spot[]>([]);
   const [routingControl, setRoutingControl] = useState<L.Routing.Control | null>(null);
 
-  // 初始化與 routeMode 切換時重設所有資料（達到刷新效果）
+  // 進出模式清除
   useEffect(() => {
     if (routingControl) {
-      try {
-        routingControl.remove();
-      } catch (e) {
-        console.warn('清除路線控制器失敗：', e);
-      }
+      routingControl.remove();
       setRoutingControl(null);
     }
     setUserPoints([]);
     setSelectedSpots([]);
   }, [routeMode]);
 
-  // 點擊新增使用者地點（限制 3 點）
+  // 點擊新增最多三個 userPoints
   useEffect(() => {
     if (!map || !routeMode) return;
-
     const onClick = (e: L.LeafletMouseEvent) => {
       setUserPoints((prev) => {
         const updated = [...prev, e.latlng];
-        if (updated.length > 3) updated.shift();
-        return updated;
+        return updated.length > 3 ? updated.slice(1) : updated;
       });
     };
-
     map.on('click', onClick);
     return () => {
-      map.off('click', onClick);
+        map.off('click', onClick);
     };
   }, [map, routeMode]);
 
-  // 建立路線（只要有兩點以上就畫）
+  // 當有兩個以上點就畫路線
   useEffect(() => {
     if (!map || userPoints.length + selectedSpots.length < 2) return;
-
-    if (routingControl) {
-      try {
-        routingControl.remove();
-      } catch (err) {
-        console.warn('清除舊路線錯誤：', err);
-      }
-    }
+    if (routingControl) routingControl.remove();
 
     const waypoints = [
       ...selectedSpots.map(s => L.latLng(s.lat, s.lng)),
@@ -87,7 +73,6 @@ const RoutingWithPOI: React.FC<RoutingWithPOIProps> = ({ spots, routeMode }) => 
           <Popup>Routing Point {idx + 1}</Popup>
         </Marker>
       ))}
-
       {spots.map((spot) => (
         <Marker key={spot.name} position={[spot.lat, spot.lng]}>
           <Popup>
@@ -99,14 +84,12 @@ const RoutingWithPOI: React.FC<RoutingWithPOIProps> = ({ spots, routeMode }) => 
             />
             <p>{spot.description}</p>
             {routeMode && (
-              <button
-                onClick={() => {
-                  setSelectedSpots((prev) => {
-                    const exists = prev.find((s) => s.name === spot.name);
-                    return exists ? prev : [...prev, spot];
-                  });
-                }}
-              >
+              <button onClick={() => {
+                setSelectedSpots((prev) => {
+                  const exists = prev.find((s) => s.name === spot.name);
+                  return exists ? prev : [...prev, spot];
+                });
+              }}>
                 加入路線
               </button>
             )}
