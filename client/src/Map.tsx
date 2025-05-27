@@ -59,7 +59,7 @@ const Map = () => {
 
 	useEffect(() => {
 		axios
-			.get('http://localhost:8088/spots')
+			.get('http://lukewu.site:8088/spots')
 			.then((res) => setSpots(res.data));
 	}, []);
 
