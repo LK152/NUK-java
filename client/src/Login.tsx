@@ -11,7 +11,7 @@ const Login = () => {
 
 	useEffect(() => {
 		axios
-			.get('http://lukewu.site:8088/auth/users')
+			.get('http://server:8080/auth/users')
 			.then((res) => setData(res.data))
 			.catch((err) => {
 				console.error('取得使用者資料失敗', err);
