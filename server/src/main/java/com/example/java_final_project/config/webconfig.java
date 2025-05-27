@@ -17,7 +17,7 @@ public class webconfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**") // 所有 API
-                .allowedOrigins("http://localhost:3000", "https://nukmap.xn--hrr.tw", "https://nukmap.吳.tw") // 前端的網址
+                .allowedOrigins("http://localhost:3000", "https://nukmap.xn--hrr.tw", "https://nukmap.吳.tw", "http://lukewu.site") // 前端的網址
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
