@@ -1,13 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import '../map.css';
 import { useNavigate } from 'react-router-dom';
+import Modal from './Modal';
+import axios from 'axios';
 
 interface Props {
 	onRouteClick: () => void;
 	onAboutClick: () => void;
 	onSDGsClick: () => void;
 	userName: string | null;
-	routeMode: boolean; // 新增傳入 routeMode
+	routeMode: boolean;
 }
 
 const FloatingMenu = ({
@@ -18,30 +20,53 @@ const FloatingMenu = ({
 	routeMode,
 }: Props) => {
 	const [open, setOpen] = useState(false);
+	const [modal, setModal] = useState(false);
+	const [progress, setProgress] = useState<any[]>([]);
 	const nav = useNavigate();
 
 	const handleRouteClick = () => {
 		if (routeMode) {
-			// 結束模式，重整頁面清空點與路線
-			window.location.reload();
+			window.location.reload(); // 結束模式時刷新
 		} else {
-			// 進入模式
-			onRouteClick();
+			onRouteClick(); // 開啟模式
 		}
-		setOpen(false); // 關閉選單
+		setOpen(false);
 	};
+
+	useEffect(() => {
+		axios
+			.get(`https://nukserver.xn--hrr.tw/progress/${userName}`)
+			.then((res) => setProgress(res.data));
+	}, [modal, userName]);
 
 	return (
 		<>
-			<div className="floating-button">
-				<button className="fab-main" onClick={() => setOpen(!open)}>
+			<Modal show={modal} onClose={() => setModal(false)} title='進度'>
+				{progress.map((val) => {
+					return <div>{val}</div>;
+				})}
+			</Modal>
+			<div className='floating-button'>
+				<button className='fab-main' onClick={() => setOpen(!open)}>
 					{open ? '✕' : '≡'}
 				</button>
 			</div>
 
 			<div className={`fab-options ${open ? 'show' : ''}`}>
 				{userName ? (
-					<button disabled>{`Hello, ${userName}`}</button>
+					<>
+						<button
+							onClick={() => setModal(true)}
+						>{`Hello, ${userName}`}</button>
+						<button
+							onClick={() => {
+								localStorage.clear();
+								nav('/');
+							}}
+						>
+							登出
+						</button>
+					</>
 				) : (
 					<button onClick={() => nav('/login')}>登入</button>
 				)}
