@@ -75,6 +75,7 @@ const Signup = () => {
 				<div style={{ margin: '10px 0' }}></div>
 				<button type='submit'>註冊</button>
 				{error && <p style={{ color: 'red', marginTop: '10px' }}>{error}</p>}
+				{error && <button onClick={() => nav('/login')}>回登入頁？</button>}
 			</form>
 		</div>
 	);
