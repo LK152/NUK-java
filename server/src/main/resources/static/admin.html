@@ -29,14 +29,8 @@
       animation: rise 12s infinite ease-in;
     }
     @keyframes rise {
-      0% {
-        transform: translateY(0) scale(1);
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(-120vh) scale(1.5);
-        opacity: 0;
-      }
+      0% { transform: translateY(0) scale(1); opacity: 1; }
+      100% { transform: translateY(-120vh) scale(1.5); opacity: 0; }
     }
     .container {
       max-width: 600px;
@@ -81,6 +75,22 @@
     button:hover {
       background-color: #3730a3;
     }
+    #spotList > div {
+      border: 1px solid #ccc;
+      padding: 1em;
+      margin-top: 1em;
+      border-radius: 10px;
+      background: #fff;
+    }
+    #spotList img {
+      width: 100px;
+      border-radius: 8px;
+      margin-top: 0.5em;
+    }
+    #spotList button {
+      margin-right: 1em;
+      margin-top: 0.5em;
+    }
   </style>
 </head>
 <body>
@@ -94,7 +104,7 @@
 
   <div class="container">
     <h1>新增景點</h1>
-    <form id="spotForm" action="/spots/upload" method="post" enctype="multipart/form-data">
+    <form id="spotForm">
       <input type="text" id="name" placeholder="名稱" required />
       <input type="number" id="lat" placeholder="緯度" required step="any" />
       <input type="number" id="lng" placeholder="經度" required step="any" />
@@ -105,15 +115,18 @@
       </div>
       <button type="submit">送出</button>
     </form>
-  <div style="margin-top: 2em; text-align: center;">
+
+    <div style="margin-top: 2em; text-align: center;">
       <button id="updateBtn" style="background-color:#f59e0b">修改景點</button>
-      <button id="deleteBtn" style="background-color:#ef4444">刪除景點</button>
     </div>
+
+    <div id="spotList" style="margin-top: 3em;"></div>
   </div>
 
   <script>
     const dropZone = document.getElementById('dropZone');
     const imageInput = document.getElementById('image');
+    const spotList = document.getElementById('spotList');
 
     dropZone.addEventListener('click', () => imageInput.click());
     dropZone.addEventListener('dragover', (e) => {
@@ -129,6 +142,39 @@
       dropZone.style.background = '#f9f9f9';
     });
 
+    async function loadSpots() {
+      const res = await fetch('/spots');
+      const spots = await res.json();
+
+      spotList.innerHTML = spots.map(s => `
+        <div>
+          <h3>${s.name}</h3>
+          <img src="/images/spots/${s.image}" alt="${s.name}" />
+          <p>緯度：${s.lat}, 經度：${s.lng}</p>
+          <p>${s.description}</p>
+          <button onclick="fillForm('${s.name}', ${s.lat}, ${s.lng}, \`${s.description}\`)">修改</button>
+          <button onclick="deleteSpot('${s.name}')">刪除</button>
+        </div>
+      `).join('');
+    }
+
+    function fillForm(name, lat, lng, description) {
+      document.getElementById('name').value = name;
+      document.getElementById('lat').value = lat;
+      document.getElementById('lng').value = lng;
+      document.getElementById('desc').value = description;
+      window.scrollTo(0, 0);
+    }
+
+    async function deleteSpot(name) {
+      if (!confirm(`確認刪除「${name}」嗎？`)) return;
+      const res = await fetch(`/spots/${encodeURIComponent(name)}`, {
+        method: 'DELETE'
+      });
+      alert(await res.text());
+      loadSpots();
+    }
+
     document.getElementById('spotForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const formData = new FormData();
@@ -143,39 +189,26 @@
         body: formData
       });
       alert(await res.text());
+      loadSpots();
     });
 
-    // 修改景點
     document.getElementById('updateBtn').addEventListener('click', async () => {
       const name = document.getElementById('name').value;
       const lat = parseFloat(document.getElementById('lat').value);
       const lng = parseFloat(document.getElementById('lng').value);
       const desc = document.getElementById('desc').value;
-      const body = JSON.stringify({ name, lat, lng, description: desc });
 
       const res = await fetch(`/spots/${encodeURIComponent(name)}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body
+        body: JSON.stringify({ name, lat, lng, description: desc })
       });
 
       alert(await res.text());
+      loadSpots();
     });
 
-    // 刪除景點
-    document.getElementById('deleteBtn').addEventListener('click', async () => {
-      const name = document.getElementById('name').value;
-      if (!name) return alert('請先輸入景點名稱');
-
-      const confirmDelete = confirm(`確認要刪除「${name}」景點嗎？`);
-      if (!confirmDelete) return;
-
-      const res = await fetch(`/spots/${encodeURIComponent(name)}`, {
-        method: 'DELETE'
-      });
-
-      alert(await res.text());
-    });
+    loadSpots();
   </script>
 </body>
 </html>
