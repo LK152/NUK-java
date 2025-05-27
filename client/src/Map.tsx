@@ -1,11 +1,22 @@
 import { useEffect, useState } from 'react';
-import { MapContainer, TileLayer } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import { isMobile } from 'react-device-detect';
 import axios from 'axios';
 import RoutingWithPOI from './components/RoutingWithPOI';
 import FloatingMenu from './components/FloatingMenu';
+import orangeMarker from './images/marker-icon-orange.png'
+import shadow from 'leaflet/dist/images/marker-shadow.png';
 import './map.css';
+
+const orangeIcon = new L.Icon({
+  iconUrl: orangeMarker,
+  shadowUrl: shadow,
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
+});
 
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -20,6 +31,31 @@ const Map = () => {
 		{ name: string; lat: number; lng: number; description: string; image: string}[]
 	>([]);
 	const [routeMode, setRoutingMode] = useState(false);
+	const [currentLocation, setCurrentLocation] = useState<
+		[number, number] | null
+	>(null);
+
+	useEffect(() => {
+		if (!navigator.geolocation) {
+			console.warn('Geolocation not supported');
+			return;
+		}
+
+		const watchId = navigator.geolocation.watchPosition(
+			(pos) => {
+				const { latitude, longitude } = pos.coords;
+				setCurrentLocation([latitude, longitude]);
+			},
+			(err) => console.error('Geolocation error:', err),
+			{
+				enableHighAccuracy: true,
+				maximumAge: 10_000,
+				timeout: 20_000,
+			}
+		);
+
+		return () => navigator.geolocation.clearWatch(watchId);
+	}, []);
 
 	useEffect(() => {
 		axios
@@ -41,7 +77,7 @@ const Map = () => {
 				onRouteClick={() => setRoutingMode((v) => !v)}
 				onAboutClick={() => alert('這是我們的簡介')}
 				onSDGsClick={() => alert('這是SDGs永續宣導')}
-				userName={username ? username : ''}
+				userName={username ? username : null}
 			/>
 
 			<MapContainer
@@ -61,6 +97,11 @@ const Map = () => {
 					url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
 				/>
 				<RoutingWithPOI spots={spots} routeMode={routeMode} />
+				{currentLocation && (
+					<Marker position={currentLocation} icon={orangeIcon}>
+						<Popup>你在這裡</Popup>
+					</Marker>
+				)}
 			</MapContainer>
 		</div>
 	);
