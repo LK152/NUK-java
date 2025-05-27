@@ -10,7 +10,7 @@ const Signup = () => {
 	const [error, setError] = useState('');
 
 	useEffect(() => {
-		axios.get('http://localhost:8080/auth/users')
+		axios.get('http://localhost:8088/auth/users')
 			.then((res) => setData(res.data))
 			.catch((err) => console.error('取得使用者列表失敗', err));
 	}, []);
