@@ -27,7 +27,6 @@ public class UserProgressController {
     // 內部類別：對應 users.json 結構
     private static class User {
         public String username;
-        public String password;
     }
 
     // 取得使用者探索進度（完整 Spot 資訊）
