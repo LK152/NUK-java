@@ -22,7 +22,9 @@ const FloatingMenu = ({
 	routeMode,
 }: Props) => {
 	const [open, setOpen] = useState(false);
-	const [modal, setModal] = useState(false);
+	const [modal1, setModal1] = useState(false);
+	const [modal2, setModal2] = useState(false);
+	const [modal3, setModal3] = useState(false);
 	const [progress, setProgress] = useState<any[]>([]);
 	const nav = useNavigate();
 
@@ -43,10 +45,20 @@ const FloatingMenu = ({
 
 	return (
 		<>
-			<Modal show={modal} onClose={() => setModal(false)} title='進度'>
+			<Modal show={modal1} onClose={() => setModal1(false)} title='進度'>
 				{progress.map((val) => {
 					return <div>{val}</div>;
 				})}
+			</Modal>
+			<Modal show={modal2} onClose={() => setModal2(false)} title='♻️ SDGs 宣導'>
+				<div>
+					人人健康是永續的根本，安全城市是幸福的起點。落實SDG3與SDG11，共創健康生活、宜居環境，讓未來更美好！
+				</div>;
+			</Modal>
+			<Modal show={modal3} onClose={() => setModal3(false)} title='ℹ️ 關於我們'>
+				<div>
+					這是我們用無數個日夜，在分不清汗水還是淚水的臉上，產生出來的作品。仰賴的是四位組員希望可以推廣SDGS的心情(當然還有分數)，如果有看到我們的努力，我們接受現金斗內
+				</div>
 			</Modal>
 			<div className='floating-button'>
 				<button className='fab-main' onClick={() => setOpen(!open)}>
