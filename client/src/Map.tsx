@@ -59,7 +59,7 @@ const Map = () => {
 
 	useEffect(() => {
 		axios
-			.get('http://server:8080/spots')
+			.get('https://nukserver.xn--hrr.tw/spots')
 			.then((res) => setSpots(res.data));
 	}, []);
 

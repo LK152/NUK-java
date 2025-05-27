@@ -13,7 +13,7 @@ const Signup = () => {
 
 	useEffect(() => {
 		axios
-			.get('http://server:8080/auth/users')
+			.get('https://nukserver.xn--hrr.tw/auth/users')
 			.then((res) => setData(res.data))
 			.catch((err) => console.error('取得使用者列表失敗', err));
 	}, []);
@@ -26,7 +26,7 @@ const Signup = () => {
 
 		try {
 			const res = await axios.post(
-				'http://server:8080/auth/register',
+				'https://nukserver.xn--hrr.tw/auth/register',
 				{ username: account, password: pswd },
 				{ headers: { 'Content-Type': 'application/json' } }
 			);
