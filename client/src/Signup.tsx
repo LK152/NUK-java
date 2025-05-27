@@ -25,7 +25,7 @@ const Signup = () => {
 
 		try {
 			const res = await axios.post(
-				'http://localhost:8080/auth/register',
+				'http://lukewu.site:8088/auth/register',
 				{ username: account, password: pswd },
 				{ headers: { 'Content-Type': 'application/json' } }
 			);
