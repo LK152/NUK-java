@@ -28,15 +28,9 @@ const FloatingMenu = ({
 
 	const handleRouteClick = () => {
 		if (routeMode) {
-<<<<<<< HEAD
-			window.location.reload();
-		} else {
-			onRouteClick();
-=======
 			window.location.reload(); // 結束模式時刷新
 		} else {
 			onRouteClick(); // 開啟模式
->>>>>>> refs/remotes/origin/master
 		}
 		setOpen(false);
 	};
